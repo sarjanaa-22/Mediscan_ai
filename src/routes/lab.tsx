@@ -170,6 +170,39 @@ function LabPage() {
               </Table>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Download Report</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {(() => {
+                const bundle: ReportBundle = {
+                  lab: {
+                    id: mutation.data?.id ?? "current",
+                    created_at: new Date().toISOString(),
+                    patient_name: result.patient_name,
+                    report_date: result.report_date,
+                    overall_summary: result.overall_summary,
+                    parameters: result.parameters,
+                  },
+                };
+                return (
+                  <>
+                    <Button onClick={() => downloadPdf(bundle)}>
+                      <FileText className="mr-2 h-4 w-4" /> Download PDF Report
+                    </Button>
+                    <Button variant="outline" onClick={() => downloadJson(bundle)}>
+                      <FileJson className="mr-2 h-4 w-4" /> Download JSON
+                    </Button>
+                    <Button variant="outline" onClick={() => downloadCsv(bundle)}>
+                      <FileSpreadsheet className="mr-2 h-4 w-4" /> Download CSV
+                    </Button>
+                  </>
+                );
+              })()}
+            </CardContent>
+          </Card>
         </>
       )}
     </div>
