@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { analyzeLabReport } from "@/lib/lab.functions";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/lab")({
+export const Route = createFileRoute("/lab")({
   head: () => ({ meta: [{ title: "Lab Report Analyzer — MediScan AI" }] }),
   component: LabPage,
 });
