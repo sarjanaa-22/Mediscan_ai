@@ -7,10 +7,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Download, Eye, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Download, Eye, Trash2, FileText, FileJson, FileSpreadsheet } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import {
+  adaptLabRow,
+  adaptPrescriptionRow,
+  downloadCsv,
+  downloadJson,
+  downloadPdf,
+  getPdfDataUri,
+  type ReportBundle,
+} from "@/lib/report-generator";
 
 export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Reports — MediScan AI" }] }),
@@ -29,7 +38,9 @@ function ReportsPage() {
   const rx = useQuery({ queryKey: ["prescriptions"], queryFn: () => rxFn() });
   const lab = useQuery({ queryKey: ["lab-reports"], queryFn: () => labFn() });
 
-  const [viewing, setViewing] = useState<{ kind: "rx"; row: Prescription } | { kind: "lab"; row: LabReport } | null>(null);
+  const [previewing, setPreviewing] = useState<{ bundle: ReportBundle; dataUri: string } | null>(
+    null,
+  );
 
   const del = useMutation({
     mutationFn: async (p: { id: string; kind: "prescription" | "lab" }) => delFn({ data: p }),
@@ -43,14 +54,20 @@ function ReportsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  function downloadJson(name: string, data: unknown) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = name;
-    a.click();
-    URL.revokeObjectURL(url);
+  function bundleFromPrescription(r: Prescription): ReportBundle {
+    return { prescription: adaptPrescriptionRow(r) };
+  }
+  function bundleFromLab(r: LabReport): ReportBundle {
+    return { lab: adaptLabRow(r) };
+  }
+
+  function openPreview(bundle: ReportBundle) {
+    try {
+      const { dataUri } = getPdfDataUri(bundle);
+      setPreviewing({ bundle, dataUri });
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
   }
 
   return (
@@ -58,7 +75,7 @@ function ReportsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Reports</h1>
         <p className="text-sm text-muted-foreground">
-          Your history of prescriptions and lab analyses.
+          History of prescriptions and lab analyses. Preview or export as PDF, JSON, or CSV.
         </p>
       </div>
 
@@ -76,8 +93,8 @@ function ReportsPage() {
           ) : (
             (rx.data ?? []).map((r) => (
               <Card key={r.id}>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <div>
+                <CardHeader className="flex flex-row items-start justify-between gap-3 pb-2">
+                  <div className="min-w-0">
                     <CardTitle className="text-base">
                       Prescription · {new Date(r.created_at).toLocaleString()}
                     </CardTitle>
@@ -85,25 +102,27 @@ function ReportsPage() {
                       {r.extracted_text}
                     </p>
                   </div>
-                  <Badge variant="secondary">
+                  <Badge variant="secondary" className="shrink-0">
                     {Math.round(Number(r.confidence_score ?? 0) * 100)}%
                   </Badge>
                 </CardHeader>
-                <CardContent className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setViewing({ kind: "rx", row: r })}>
-                    <Eye className="mr-2 h-4 w-4" /> View
+                <CardContent className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => openPreview(bundleFromPrescription(r))}>
+                    <Eye className="mr-2 h-4 w-4" /> Preview
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => downloadJson(`prescription-${r.id}.json`, r)}
-                  >
-                    <Download className="mr-2 h-4 w-4" /> Download
+                  <Button size="sm" onClick={() => downloadPdf(bundleFromPrescription(r))}>
+                    <FileText className="mr-2 h-4 w-4" /> PDF
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadJson(bundleFromPrescription(r))}>
+                    <FileJson className="mr-2 h-4 w-4" /> JSON
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadCsv(bundleFromPrescription(r))}>
+                    <FileSpreadsheet className="mr-2 h-4 w-4" /> CSV
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="text-destructive"
+                    className="ml-auto text-destructive"
                     onClick={() => del.mutate({ id: r.id, kind: "prescription" })}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -122,8 +141,8 @@ function ReportsPage() {
           ) : (
             (lab.data ?? []).map((r) => (
               <Card key={r.id}>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <div>
+                <CardHeader className="flex flex-row items-start justify-between gap-3 pb-2">
+                  <div className="min-w-0">
                     <CardTitle className="text-base">
                       Lab Report · {new Date(r.created_at).toLocaleString()}
                     </CardTitle>
@@ -135,21 +154,23 @@ function ReportsPage() {
                     </p>
                   </div>
                 </CardHeader>
-                <CardContent className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setViewing({ kind: "lab", row: r })}>
-                    <Eye className="mr-2 h-4 w-4" /> View
+                <CardContent className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => openPreview(bundleFromLab(r))}>
+                    <Eye className="mr-2 h-4 w-4" /> Preview
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => downloadJson(`lab-${r.id}.json`, r)}
-                  >
-                    <Download className="mr-2 h-4 w-4" /> Download
+                  <Button size="sm" onClick={() => downloadPdf(bundleFromLab(r))}>
+                    <FileText className="mr-2 h-4 w-4" /> PDF
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadJson(bundleFromLab(r))}>
+                    <FileJson className="mr-2 h-4 w-4" /> JSON
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => downloadCsv(bundleFromLab(r))}>
+                    <FileSpreadsheet className="mr-2 h-4 w-4" /> CSV
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="text-destructive"
+                    className="ml-auto text-destructive"
                     onClick={() => del.mutate({ id: r.id, kind: "lab" })}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -161,17 +182,30 @@ function ReportsPage() {
         </TabsContent>
       </Tabs>
 
-      <Dialog open={!!viewing} onOpenChange={(o) => !o && setViewing(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
+      <Dialog open={!!previewing} onOpenChange={(o) => !o && setPreviewing(null)}>
+        <DialogContent className="max-w-5xl max-h-[90vh] p-4">
           <DialogHeader>
-            <DialogTitle>
-              {viewing?.kind === "rx" ? "Prescription details" : "Lab report details"}
-            </DialogTitle>
+            <DialogTitle>Report Preview</DialogTitle>
           </DialogHeader>
-          {viewing && (
-            <pre className="overflow-auto rounded-lg bg-secondary/40 p-4 text-xs">
-              {JSON.stringify(viewing.row, null, 2)}
-            </pre>
+          {previewing && (
+            <div className="space-y-3">
+              <iframe
+                src={previewing.dataUri}
+                title="Report preview"
+                className="h-[70vh] w-full rounded-lg border border-border bg-white"
+              />
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={() => downloadPdf(previewing.bundle)}>
+                  <FileText className="mr-2 h-4 w-4" /> Download PDF
+                </Button>
+                <Button variant="outline" onClick={() => downloadJson(previewing.bundle)}>
+                  <FileJson className="mr-2 h-4 w-4" /> Download JSON
+                </Button>
+                <Button variant="outline" onClick={() => downloadCsv(previewing.bundle)}>
+                  <FileSpreadsheet className="mr-2 h-4 w-4" /> Download CSV
+                </Button>
+              </div>
+            </div>
           )}
         </DialogContent>
       </Dialog>
@@ -186,3 +220,6 @@ function Empty({ msg }: { msg: string }) {
     </Card>
   );
 }
+
+// Suppress unused warning — useMemo kept for future memo of bundles
+void useMemo;
