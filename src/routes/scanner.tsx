@@ -21,7 +21,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-export const Route = createFileRoute("/_authenticated/scanner")({
+export const Route = createFileRoute("/scanner")({
   head: () => ({ meta: [{ title: "Prescription Scanner — MediScan AI" }] }),
   component: ScannerPage,
 });

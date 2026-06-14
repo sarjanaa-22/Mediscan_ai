@@ -1,17 +1,16 @@
-import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   ScanLine,
   Pill,
   FlaskConical,
   FileText,
-  LogOut,
+  Settings,
   Stethoscope,
 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -20,8 +19,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -29,17 +26,11 @@ const items = [
   { title: "Medicines", url: "/medicines", icon: Pill },
   { title: "Lab Analyzer", url: "/lab", icon: FlaskConical },
   { title: "Reports", url: "/reports", icon: FileText },
-];
+  { title: "Settings", url: "/settings", icon: Settings },
+] as const;
 
 export function AppSidebar() {
-  const navigate = useNavigate();
   const path = useRouterState({ select: (r) => r.location.pathname });
-
-  async function signOut() {
-    await supabase.auth.signOut();
-    toast.success("Signed out");
-    navigate({ to: "/auth", replace: true });
-  }
 
   return (
     <Sidebar collapsible="icon">
@@ -73,16 +64,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton onClick={signOut}>
-              <LogOut className="h-4 w-4" />
-              <span>Sign out</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 }

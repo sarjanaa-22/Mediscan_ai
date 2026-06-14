@@ -28,6 +28,26 @@ export function similarity(a: string, b: string): number {
   return 1 - levenshtein(a, b) / maxLen;
 }
 
+// Common abbreviation map (in-code, since the DB column was removed).
+const ABBREVIATIONS: Record<string, string> = {
+  pcm: "paracetamol",
+  para: "paracetamol",
+  amox: "amoxicillin",
+  az: "azithromycin",
+  azi: "azithromycin",
+  met: "metformin",
+  mtx: "methotrexate",
+  ome: "omeprazole",
+  pan: "pantoprazole",
+  cipro: "ciprofloxacin",
+  ceft: "ceftriaxone",
+  ibu: "ibuprofen",
+  dic: "diclofenac",
+  asp: "aspirin",
+  ator: "atorvastatin",
+  losart: "losartan",
+};
+
 export type MedicineRow = {
   id: string;
   medicine_name: string;
@@ -37,7 +57,6 @@ export type MedicineRow = {
   dosage: string | null;
   side_effects: string | null;
   manufacturer: string | null;
-  abbreviations: string[] | null;
 };
 
 export type MatchResult = {
@@ -52,18 +71,23 @@ export function matchMedicine(query: string, catalog: MedicineRow[]): MatchResul
   if (!q) return { query, matched: null, score: 0, method: "none" };
   const qLower = q.toLowerCase();
 
-  // 1. Exact (case-insensitive)
+  // 1. Exact
   for (const m of catalog) {
     if (m.medicine_name.toLowerCase() === qLower) {
       return { query: q, matched: m, score: 1, method: "exact" };
     }
   }
 
-  // 2. Abbreviation
-  for (const m of catalog) {
-    const abbrs = (m.abbreviations ?? []).map((a) => a.toLowerCase());
-    if (abbrs.includes(qLower)) {
-      return { query: q, matched: m, score: 0.95, method: "abbreviation" };
+  // 2. Abbreviation (in-code map)
+  const expanded = ABBREVIATIONS[qLower];
+  if (expanded) {
+    for (const m of catalog) {
+      if (
+        m.medicine_name.toLowerCase() === expanded ||
+        (m.generic_name ?? "").toLowerCase() === expanded
+      ) {
+        return { query: q, matched: m, score: 0.95, method: "abbreviation" };
+      }
     }
   }
 

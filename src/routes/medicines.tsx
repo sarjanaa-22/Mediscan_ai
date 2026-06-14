@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/medicines")({
+export const Route = createFileRoute("/medicines")({
   head: () => ({ meta: [{ title: "Medicine Database — MediScan AI" }] }),
   component: MedicinesPage,
 });

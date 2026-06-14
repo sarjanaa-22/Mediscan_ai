@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/reports")({
+export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Reports — MediScan AI" }] }),
   component: ReportsPage,
 });
