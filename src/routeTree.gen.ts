@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScannerRouteImport } from './routes/scanner'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as MedicinesRouteImport } from './routes/medicines'
@@ -20,6 +21,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScannerRoute = ScannerRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/medicines': typeof MedicinesRoute
   '/reports': typeof ReportsRoute
   '/scanner': typeof ScannerRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/medicines': typeof MedicinesRoute
   '/reports': typeof ReportsRoute
   '/scanner': typeof ScannerRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/medicines': typeof MedicinesRoute
   '/reports': typeof ReportsRoute
   '/scanner': typeof ScannerRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/medicines'
     | '/reports'
     | '/scanner'
+    | '/settings'
     | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/medicines'
     | '/reports'
     | '/scanner'
+    | '/settings'
     | '/sitemap.xml'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/medicines'
     | '/reports'
     | '/scanner'
+    | '/settings'
     | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   MedicinesRoute: typeof MedicinesRoute
   ReportsRoute: typeof ReportsRoute
   ScannerRoute: typeof ScannerRoute
+  SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scanner': {
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   MedicinesRoute: MedicinesRoute,
   ReportsRoute: ReportsRoute,
   ScannerRoute: ScannerRoute,
+  SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
