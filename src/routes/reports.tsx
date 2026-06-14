@@ -220,6 +220,3 @@ function Empty({ msg }: { msg: string }) {
     </Card>
   );
 }
-
-// Suppress unused warning — useMemo kept for future memo of bundles
-void useMemo;
