@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { Upload, Loader2, FileText, FileJson, FileSpreadsheet } from "lucide-react";
+import { Upload, Loader2, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { analyzeLabReport } from "@/lib/lab.functions";
 import { toast } from "sonner";
-import { downloadCsv, downloadJson, downloadPdf, type ReportBundle } from "@/lib/report-generator";
 
 export const Route = createFileRoute("/lab")({
   head: () => ({ meta: [{ title: "Lab Report Analyzer — MediScan AI" }] }),
@@ -168,39 +167,6 @@ function LabPage() {
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Download Report</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-wrap gap-2">
-              {(() => {
-                const bundle: ReportBundle = {
-                  lab: {
-                    id: mutation.data?.id ?? "current",
-                    created_at: new Date().toISOString(),
-                    patient_name: result.patient_name,
-                    report_date: result.report_date,
-                    overall_summary: result.overall_summary,
-                    parameters: result.parameters,
-                  },
-                };
-                return (
-                  <>
-                    <Button onClick={() => downloadPdf(bundle)}>
-                      <FileText className="mr-2 h-4 w-4" /> Download PDF Report
-                    </Button>
-                    <Button variant="outline" onClick={() => downloadJson(bundle)}>
-                      <FileJson className="mr-2 h-4 w-4" /> Download JSON
-                    </Button>
-                    <Button variant="outline" onClick={() => downloadCsv(bundle)}>
-                      <FileSpreadsheet className="mr-2 h-4 w-4" /> Download CSV
-                    </Button>
-                  </>
-                );
-              })()}
             </CardContent>
           </Card>
         </>
