@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardStats } from "@/lib/dashboard.functions";
-import { ScanLine, ShieldCheck, Gauge, FlaskConical } from "lucide-react";
+import { ScanLine, ShieldCheck, Gauge, FlaskConical, Pill, FileText, ArrowRight } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -61,13 +61,61 @@ function Dashboard() {
     { name: "Unknown", value: data.verification.unknown, color: "var(--destructive)" },
   ];
 
+  const quickActions = [
+    {
+      title: "Scan Prescription",
+      desc: "Digitize handwritten prescriptions with AI OCR.",
+      to: "/scanner",
+      icon: ScanLine,
+    },
+    {
+      title: "Verify Medicines",
+      desc: "Search the medicine catalog and verify drugs.",
+      to: "/medicines",
+      icon: Pill,
+    },
+    {
+      title: "Analyze Lab Report",
+      desc: "Extract parameters and get plain-English insights.",
+      to: "/lab",
+      icon: FlaskConical,
+    },
+    {
+      title: "View Reports",
+      desc: "Browse and download your processing history.",
+      to: "/reports",
+      icon: FileText,
+    },
+  ] as const;
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-sm text-muted-foreground">
-          Real-time overview of your scanning activity.
+          AI-powered prescription digitization and clinical decision support.
         </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {quickActions.map((a) => (
+          <Link key={a.to} to={a.to} className="group">
+            <Card className="card-elevated h-full transition hover:border-primary/60 hover:shadow-md">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <a.icon className="h-5 w-5" />
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-primary" />
+                </div>
+                <CardTitle className="pt-2 text-base">{a.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-muted-foreground">{a.desc}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
