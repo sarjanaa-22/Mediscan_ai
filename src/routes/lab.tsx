@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import { Upload, Loader2, FileText } from "lucide-react";
+import { Upload, Loader2, FileText, FileJson, FileSpreadsheet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { analyzeLabReport } from "@/lib/lab.functions";
 import { toast } from "sonner";
+import { downloadCsv, downloadJson, downloadPdf, type ReportBundle } from "@/lib/report-generator";
 
 export const Route = createFileRoute("/lab")({
   head: () => ({ meta: [{ title: "Lab Report Analyzer — MediScan AI" }] }),
