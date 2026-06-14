@@ -19,34 +19,24 @@ export type Database = {
           created_at: string
           extracted_data: Json | null
           id: string
-          patient_name: string | null
           report_path: string | null
-          summary: string | null
-          user_id: string
         }
         Insert: {
           created_at?: string
           extracted_data?: Json | null
           id?: string
-          patient_name?: string | null
           report_path?: string | null
-          summary?: string | null
-          user_id: string
         }
         Update: {
           created_at?: string
           extracted_data?: Json | null
           id?: string
-          patient_name?: string | null
           report_path?: string | null
-          summary?: string | null
-          user_id?: string
         }
         Relationships: []
       }
       medicines: {
         Row: {
-          abbreviations: string[] | null
           created_at: string
           dosage: string | null
           drug_class: string | null
@@ -58,7 +48,6 @@ export type Database = {
           side_effects: string | null
         }
         Insert: {
-          abbreviations?: string[] | null
           created_at?: string
           dosage?: string | null
           drug_class?: string | null
@@ -70,7 +59,6 @@ export type Database = {
           side_effects?: string | null
         }
         Update: {
-          abbreviations?: string[] | null
           created_at?: string
           dosage?: string | null
           drug_class?: string | null
@@ -87,56 +75,23 @@ export type Database = {
         Row: {
           confidence_score: number | null
           created_at: string
-          detected_medicines: Json | null
-          engine_outputs: Json | null
           extracted_text: string | null
           id: string
           image_path: string | null
-          processing_time_ms: number | null
-          user_id: string
         }
         Insert: {
           confidence_score?: number | null
           created_at?: string
-          detected_medicines?: Json | null
-          engine_outputs?: Json | null
           extracted_text?: string | null
           id?: string
           image_path?: string | null
-          processing_time_ms?: number | null
-          user_id: string
         }
         Update: {
           confidence_score?: number | null
           created_at?: string
-          detected_medicines?: Json | null
-          engine_outputs?: Json | null
           extracted_text?: string | null
           id?: string
           image_path?: string | null
-          processing_time_ms?: number | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          created_at: string
-          email: string | null
-          full_name: string | null
-          id: string
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id: string
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
         }
         Relationships: []
       }
@@ -145,30 +100,24 @@ export type Database = {
           created_at: string
           id: string
           match_score: number | null
-          matched_medicine: string | null
+          medicine_name: string | null
           prescription_id: string
-          raw_text: string | null
-          user_id: string
           verification_status: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           match_score?: number | null
-          matched_medicine?: string | null
+          medicine_name?: string | null
           prescription_id: string
-          raw_text?: string | null
-          user_id: string
           verification_status?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           match_score?: number | null
-          matched_medicine?: string | null
+          medicine_name?: string | null
           prescription_id?: string
-          raw_text?: string | null
-          user_id?: string
           verification_status?: string | null
         }
         Relationships: [
