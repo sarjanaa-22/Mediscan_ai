@@ -10,13 +10,13 @@ export type DetectedMedicine = {
   match_method?: string;
   match_score?: number;
   matched_medicine?: {
-    name?: string;
-    generic?: string;
-    drug_class?: string;
-    indications?: string;
-    dosage?: string;
-    side_effects?: string;
-    manufacturer?: string;
+    name?: string | null;
+    generic?: string | null;
+    drug_class?: string | null;
+    indications?: string | null;
+    dosage?: string | null;
+    side_effects?: string | null;
+    manufacturer?: string | null;
   } | null;
 };
 
