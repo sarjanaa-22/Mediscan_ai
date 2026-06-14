@@ -287,6 +287,46 @@ function ScannerPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Report downloads */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Download Report</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {(() => {
+                const bundle: ReportBundle = {
+                  prescription: {
+                    id: result.id,
+                    created_at: new Date().toISOString(),
+                    image_data_url: preview,
+                    extracted_text: editedText || result.extracted_text,
+                    confidence: result.confidence,
+                    recognition_quality: result.recognition_quality,
+                    patient_name: result.patient_name,
+                    doctor_name: result.doctor_name,
+                    date: result.date,
+                    engines: result.engines,
+                    detected: result.detected,
+                    processing_time_ms: result.processing_time_ms,
+                  },
+                };
+                return (
+                  <>
+                    <Button onClick={() => downloadPdf(bundle)}>
+                      <FileText className="mr-2 h-4 w-4" /> Download PDF Report
+                    </Button>
+                    <Button variant="outline" onClick={() => downloadJson(bundle)}>
+                      <FileJson className="mr-2 h-4 w-4" /> Download JSON
+                    </Button>
+                    <Button variant="outline" onClick={() => downloadCsv(bundle)}>
+                      <FileSpreadsheet className="mr-2 h-4 w-4" /> Download CSV
+                    </Button>
+                  </>
+                );
+              })()}
+            </CardContent>
+          </Card>
         </>
       )}
     </div>
