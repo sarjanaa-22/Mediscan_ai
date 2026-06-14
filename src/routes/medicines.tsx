@@ -65,15 +65,6 @@ function MedicinesPage() {
                 <Row k="Dosage" v={m.dosage} />
                 <Row k="Side effects" v={m.side_effects} />
                 <Row k="Manufacturer" v={m.manufacturer} />
-                {m.abbreviations && m.abbreviations.length > 0 && (
-                  <div className="flex flex-wrap gap-1 pt-1">
-                    {m.abbreviations.map((a) => (
-                      <Badge key={a} variant="outline" className="text-[10px]">
-                        {a}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
               </CardContent>
             </Card>
           ))}

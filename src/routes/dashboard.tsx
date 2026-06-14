@@ -173,7 +173,7 @@ function Dashboard() {
               {data.recent.map((r, i) => (
                 <div key={i} className="flex items-center justify-between py-2.5 text-sm">
                   <div>
-                    <div className="font-medium">{r.matched_medicine ?? r.raw_text ?? "—"}</div>
+                    <div className="font-medium">{r.medicine_name ?? "—"}</div>
                     <div className="text-xs text-muted-foreground">
                       {new Date(r.created_at).toLocaleString()}
                     </div>

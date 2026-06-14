@@ -127,7 +127,12 @@ function ReportsPage() {
                     <CardTitle className="text-base">
                       Lab Report · {new Date(r.created_at).toLocaleString()}
                     </CardTitle>
-                    <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{r.summary}</p>
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
+                      {(() => {
+                        const d = r.extracted_data as { overall_summary?: string } | null;
+                        return d?.overall_summary ?? "Lab analysis stored";
+                      })()}
+                    </p>
                   </div>
                 </CardHeader>
                 <CardContent className="flex gap-2">
