@@ -11,6 +11,8 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { scanPrescription } from "@/lib/ocr.functions";
 import { toast } from "sonner";
+import { downloadCsv, downloadJson, downloadPdf, type ReportBundle } from "@/lib/report-generator";
+import { FileText, FileJson, FileSpreadsheet } from "lucide-react";
 import {
   BarChart,
   Bar,
