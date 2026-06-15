@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
-import { Upload, Camera, Loader2, FileImage, Sparkles, CheckCircle2, AlertTriangle, HelpCircle } from "lucide-react";
+import { Upload, Camera, Loader2, FileImage, Sparkles, CheckCircle2, AlertTriangle, HelpCircle, FileText, Download, Eye, FileJson, FileSpreadsheet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { scanPrescription } from "@/lib/ocr.functions";
+import { generatePrescriptionPdf, downloadJson, downloadCsv, type ScanResult as PdfScanResult } from "@/lib/pdf-report";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
   BarChart,
@@ -31,6 +33,8 @@ type ScanResult = Awaited<ReturnType<typeof scanPrescription>>;
 function ScannerPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [editedText, setEditedText] = useState("");
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfOpen, setPdfOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
@@ -38,11 +42,21 @@ function ScannerPage() {
 
   const mutation = useMutation({
     mutationFn: async (imageDataUrl: string) => fn({ data: { imageDataUrl } }),
-    onSuccess: (data: ScanResult) => {
+    onSuccess: async (data: ScanResult) => {
       setEditedText(data.extracted_text);
       qc.invalidateQueries({ queryKey: ["dashboard-stats"] });
       qc.invalidateQueries({ queryKey: ["prescriptions"] });
       toast.success("Prescription analyzed");
+      try {
+        const doc = await generatePrescriptionPdf(data as PdfScanResult, preview);
+        const blob = doc.output("blob");
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+        doc.save(`mediscan-report-${data.id.slice(0, 8)}.pdf`);
+        toast.success("PDF report downloaded");
+      } catch (e) {
+        console.error(e);
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -194,6 +208,49 @@ function ScannerPage() {
 
       {result && (
         <>
+          {/* Report actions */}
+          <Card className="card-elevated">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <FileText className="h-4 w-4 text-primary" /> Report
+              </CardTitle>
+              <Badge variant="secondary">Auto-downloaded</Badge>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!pdfUrl}
+                onClick={() => setPdfOpen(true)}
+              >
+                <Eye className="mr-2 h-4 w-4" /> View Report
+              </Button>
+              <Button
+                size="sm"
+                onClick={async () => {
+                  const doc = await generatePrescriptionPdf(result as PdfScanResult, preview);
+                  doc.save(`mediscan-report-${result.id.slice(0, 8)}.pdf`);
+                }}
+              >
+                <Download className="mr-2 h-4 w-4" /> Download PDF Report
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => downloadJson(`mediscan-${result.id.slice(0, 8)}.json`, result)}
+              >
+                <FileJson className="mr-2 h-4 w-4" /> Download JSON Report
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => downloadCsv(`mediscan-${result.id.slice(0, 8)}.csv`, result as PdfScanResult)}
+              >
+                <FileSpreadsheet className="mr-2 h-4 w-4" /> Download CSV Report
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* OCR Engines comparison */}
           <Card>
             <CardHeader>
@@ -287,6 +344,21 @@ function ScannerPage() {
           </Card>
         </>
       )}
+
+      <Dialog open={pdfOpen} onOpenChange={setPdfOpen}>
+        <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden">
+          <DialogHeader className="px-6 pt-4">
+            <DialogTitle>Prescription Report Preview</DialogTitle>
+          </DialogHeader>
+          {pdfUrl ? (
+            <iframe src={pdfUrl} title="PDF Preview" className="h-full w-full border-0" />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+              Generating preview...
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
