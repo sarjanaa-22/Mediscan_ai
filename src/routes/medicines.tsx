@@ -50,19 +50,35 @@ function MedicinesPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {(data ?? []).map((m) => (
-            <Card key={m.id} className="card-elevated">
+            <Card key={m.id} className="card-elevated overflow-hidden">
               <CardHeader className="pb-2">
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="text-base">{m.medicine_name}</CardTitle>
-                  <Badge variant="secondary" className="shrink-0 text-xs">
-                    {m.drug_class}
-                  </Badge>
+                <div className="flex items-start gap-3">
+                  {m.image_url ? (
+                    <img
+                      src={m.image_url}
+                      alt={m.medicine_name}
+                      loading="lazy"
+                      className="h-14 w-14 shrink-0 rounded-md border border-border/60 object-cover"
+                      onError={(e) => ((e.currentTarget.style.display = "none"))}
+                    />
+                  ) : null}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <CardTitle className="text-base leading-tight">{m.medicine_name}</CardTitle>
+                      {m.drug_class && (
+                        <Badge variant="secondary" className="shrink-0 text-xs">
+                          {m.drug_class}
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                      {m.composition || m.generic_name}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground">{m.generic_name}</p>
               </CardHeader>
               <CardContent className="space-y-1.5 text-xs">
                 <Row k="Uses" v={m.indications} />
-                <Row k="Dosage" v={m.dosage} />
                 <Row k="Side effects" v={m.side_effects} />
                 <Row k="Manufacturer" v={m.manufacturer} />
               </CardContent>
