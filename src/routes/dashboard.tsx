@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardStats } from "@/lib/dashboard.functions";
-import { ScanLine, ShieldCheck, Gauge, FlaskConical, Pill, FileText, ArrowRight } from "lucide-react";
+import { ScanLine, ShieldCheck, Gauge, FlaskConical, Pill, FileText, ArrowRight, Database } from "lucide-react";
 import {
   LineChart,
   Line,
