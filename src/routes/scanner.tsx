@@ -344,6 +344,21 @@ function ScannerPage() {
           </Card>
         </>
       )}
+
+      <Dialog open={pdfOpen} onOpenChange={setPdfOpen}>
+        <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden">
+          <DialogHeader className="px-6 pt-4">
+            <DialogTitle>Prescription Report Preview</DialogTitle>
+          </DialogHeader>
+          {pdfUrl ? (
+            <iframe src={pdfUrl} title="PDF Preview" className="h-full w-full border-0" />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+              Generating preview...
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
