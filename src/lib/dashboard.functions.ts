@@ -62,6 +62,8 @@ export const getDashboardStats = createServerFn({ method: "GET" }).handler(async
       lab_reports: labRes.count ?? 0,
       medicines_verified: verified,
       accuracy: Math.round(accuracy * 100),
+      medicines_catalog: medRes.count ?? 0,
+      last_import: medLatest.data?.created_at ?? null,
     },
     monthly: months,
     verification: verCounts,
