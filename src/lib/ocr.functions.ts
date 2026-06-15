@@ -54,10 +54,31 @@ export const scanPrescription = createServerFn({ method: "POST" })
     const parsed = tryParseJson<OcrJson>(raw);
     if (!parsed) throw new Error("Could not parse AI response. Try a clearer image.");
 
-    const { data: meds, error } = await supabaseAdmin.from("medicines").select("*");
-    if (error) throw new Error(error.message);
+    // Build a candidate pool: query only medicines whose name/composition
+    // matches any detected term. Avoids loading the full 11k-row catalog.
+    const probes = (parsed.medicines ?? [])
+      .map((m) => (m.suggested || m.raw || "").trim())
+      .filter((p) => p.length >= 2);
+    const seen = new Set<string>();
+    const catalog: MedicineRow[] = [];
+    for (const probe of probes) {
+      const head = probe.replace(/[%,]/g, "").split(/\s+/)[0]?.slice(0, 20);
+      if (!head || head.length < 2) continue;
+      const { data: rows } = await supabaseAdmin
+        .from("medicines")
+        .select(
+          "id, medicine_name, generic_name, drug_class, indications, dosage, side_effects, manufacturer, composition, image_url",
+        )
+        .or(`medicine_name.ilike.%${head}%,composition.ilike.%${head}%,generic_name.ilike.%${head}%`)
+        .limit(50);
+      for (const r of rows ?? []) {
+        if (!seen.has(r.id)) {
+          seen.add(r.id);
+          catalog.push(r as MedicineRow);
+        }
+      }
+    }
 
-    const catalog = (meds ?? []) as MedicineRow[];
     const detected = (parsed.medicines ?? []).map((m) => {
       const probe = m.suggested || m.raw;
       const match = matchMedicine(probe, catalog);
@@ -77,6 +98,8 @@ export const scanPrescription = createServerFn({ method: "POST" })
               dosage: match.matched.dosage,
               side_effects: match.matched.side_effects,
               manufacturer: match.matched.manufacturer,
+              composition: match.matched.composition,
+              image_url: match.matched.image_url,
             }
           : null,
       };

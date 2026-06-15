@@ -11,12 +11,12 @@ export const searchMedicines = createServerFn({ method: "GET" })
       .from("medicines")
       .select("*")
       .order("medicine_name")
-      .limit(200);
+      .limit(60);
 
     if (data.q && data.q.trim()) {
-      const q = data.q.trim();
+      const q = data.q.trim().replace(/,/g, " ");
       query = query.or(
-        `medicine_name.ilike.%${q}%,generic_name.ilike.%${q}%,drug_class.ilike.%${q}%`,
+        `medicine_name.ilike.%${q}%,composition.ilike.%${q}%,generic_name.ilike.%${q}%,drug_class.ilike.%${q}%,manufacturer.ilike.%${q}%`,
       );
     }
     const { data: rows, error } = await query;
