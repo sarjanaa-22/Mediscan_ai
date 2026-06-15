@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 export const getDashboardStats = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-  const [rxRes, labRes, verRes] = await Promise.all([
+  const [rxRes, labRes, verRes, medRes, medLatest] = await Promise.all([
     supabaseAdmin
       .from("prescriptions")
       .select("id, confidence_score, created_at", { count: "exact" })
@@ -13,6 +13,13 @@ export const getDashboardStats = createServerFn({ method: "GET" }).handler(async
       .from("verification_logs")
       .select("verification_status, created_at, medicine_name, match_score", { count: "exact" })
       .order("created_at", { ascending: false }),
+    supabaseAdmin.from("medicines").select("id", { count: "exact", head: true }),
+    supabaseAdmin
+      .from("medicines")
+      .select("created_at")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const rxs = rxRes.data ?? [];
