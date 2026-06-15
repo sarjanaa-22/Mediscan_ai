@@ -118,6 +118,39 @@ function Dashboard() {
         ))}
       </div>
 
+      <Card className="card-elevated border-primary/30 bg-primary/5">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
+              <Database className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-sm font-semibold">Medicine Catalog</div>
+              <div className="text-xs text-muted-foreground">
+                Imported from Medicine_Details.csv · Status:{" "}
+                <span className="font-medium text-success">Ready</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-6">
+            <div>
+              <div className="text-xs text-muted-foreground">Total medicines</div>
+              <div className="text-xl font-bold">
+                {(data.totals.medicines_catalog ?? 0).toLocaleString()}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Last import</div>
+              <div className="text-sm font-medium">
+                {data.totals.last_import
+                  ? new Date(data.totals.last_import).toLocaleDateString()
+                  : "—"}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <Card key={s.label} className="card-elevated">
