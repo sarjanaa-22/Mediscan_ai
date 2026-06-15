@@ -208,6 +208,49 @@ function ScannerPage() {
 
       {result && (
         <>
+          {/* Report actions */}
+          <Card className="card-elevated">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <FileText className="h-4 w-4 text-primary" /> Report
+              </CardTitle>
+              <Badge variant="secondary">Auto-downloaded</Badge>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!pdfUrl}
+                onClick={() => setPdfOpen(true)}
+              >
+                <Eye className="mr-2 h-4 w-4" /> View Report
+              </Button>
+              <Button
+                size="sm"
+                onClick={async () => {
+                  const doc = await generatePrescriptionPdf(result as PdfScanResult, preview);
+                  doc.save(`mediscan-report-${result.id.slice(0, 8)}.pdf`);
+                }}
+              >
+                <Download className="mr-2 h-4 w-4" /> Download PDF Report
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => downloadJson(`mediscan-${result.id.slice(0, 8)}.json`, result)}
+              >
+                <FileJson className="mr-2 h-4 w-4" /> Download JSON Report
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => downloadCsv(`mediscan-${result.id.slice(0, 8)}.csv`, result as PdfScanResult)}
+              >
+                <FileSpreadsheet className="mr-2 h-4 w-4" /> Download CSV Report
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* OCR Engines comparison */}
           <Card>
             <CardHeader>
