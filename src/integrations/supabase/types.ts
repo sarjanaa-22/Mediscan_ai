@@ -37,36 +37,51 @@ export type Database = {
       }
       medicines: {
         Row: {
+          average_review: number | null
+          composition: string | null
           created_at: string
           dosage: string | null
           drug_class: string | null
+          excellent_review: number | null
           generic_name: string | null
           id: string
+          image_url: string | null
           indications: string | null
           manufacturer: string | null
           medicine_name: string
+          poor_review: number | null
           side_effects: string | null
         }
         Insert: {
+          average_review?: number | null
+          composition?: string | null
           created_at?: string
           dosage?: string | null
           drug_class?: string | null
+          excellent_review?: number | null
           generic_name?: string | null
           id?: string
+          image_url?: string | null
           indications?: string | null
           manufacturer?: string | null
           medicine_name: string
+          poor_review?: number | null
           side_effects?: string | null
         }
         Update: {
+          average_review?: number | null
+          composition?: string | null
           created_at?: string
           dosage?: string | null
           drug_class?: string | null
+          excellent_review?: number | null
           generic_name?: string | null
           id?: string
+          image_url?: string | null
           indications?: string | null
           manufacturer?: string | null
           medicine_name?: string
+          poor_review?: number | null
           side_effects?: string | null
         }
         Relationships: []
@@ -135,7 +150,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       [_ in never]: never
