@@ -57,6 +57,8 @@ export type MedicineRow = {
   dosage: string | null;
   side_effects: string | null;
   manufacturer: string | null;
+  composition: string | null;
+  image_url: string | null;
 };
 
 export type MatchResult = {
