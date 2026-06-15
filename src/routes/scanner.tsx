@@ -33,6 +33,8 @@ type ScanResult = Awaited<ReturnType<typeof scanPrescription>>;
 function ScannerPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [editedText, setEditedText] = useState("");
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfOpen, setPdfOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
@@ -40,11 +42,21 @@ function ScannerPage() {
 
   const mutation = useMutation({
     mutationFn: async (imageDataUrl: string) => fn({ data: { imageDataUrl } }),
-    onSuccess: (data: ScanResult) => {
+    onSuccess: async (data: ScanResult) => {
       setEditedText(data.extracted_text);
       qc.invalidateQueries({ queryKey: ["dashboard-stats"] });
       qc.invalidateQueries({ queryKey: ["prescriptions"] });
       toast.success("Prescription analyzed");
+      try {
+        const doc = await generatePrescriptionPdf(data as PdfScanResult, preview);
+        const blob = doc.output("blob");
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+        doc.save(`mediscan-report-${data.id.slice(0, 8)}.pdf`);
+        toast.success("PDF report downloaded");
+      } catch (e) {
+        console.error(e);
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });
