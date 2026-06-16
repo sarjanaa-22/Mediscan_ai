@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
-import { Upload, Camera, Loader2, FileImage, Sparkles, CheckCircle2, AlertTriangle, HelpCircle, FileText, Download, Eye, FileJson, FileSpreadsheet } from "lucide-react";
+import { Upload, Camera, Loader2, FileImage, Sparkles, CheckCircle2, AlertTriangle, HelpCircle, FileText, Download, Eye, FileJson, FileSpreadsheet, Trash2, RotateCcw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { scanPrescription } from "@/lib/ocr.functions";
 import { generatePrescriptionPdf, downloadJson, downloadCsv, type ScanResult as PdfScanResult } from "@/lib/pdf-report";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CameraCapture } from "@/components/camera-capture";
+import { compressImage } from "@/lib/image-compress";
 import { toast } from "sonner";
 import {
   BarChart,
