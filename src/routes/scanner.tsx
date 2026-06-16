@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
-import { Upload, Camera, Loader2, FileImage, Sparkles, CheckCircle2, AlertTriangle, HelpCircle, FileText, Download, Eye, FileJson, FileSpreadsheet } from "lucide-react";
+import { Upload, Camera, Loader2, FileImage, Sparkles, CheckCircle2, AlertTriangle, HelpCircle, FileText, Download, Eye, FileJson, FileSpreadsheet, Trash2, RotateCcw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { scanPrescription } from "@/lib/ocr.functions";
 import { generatePrescriptionPdf, downloadJson, downloadCsv, type ScanResult as PdfScanResult } from "@/lib/pdf-report";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CameraCapture } from "@/components/camera-capture";
+import { compressImage } from "@/lib/image-compress";
 import { toast } from "sonner";
 import {
   BarChart,
@@ -35,8 +37,9 @@ function ScannerPage() {
   const [editedText, setEditedText] = useState("");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const cameraRef = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
   const fn = useServerFn(scanPrescription);
 
@@ -61,29 +64,49 @@ function ScannerPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const handleFile = useCallback((file: File) => {
+  const runScan = useCallback((dataUrl: string) => {
+    setPreview(dataUrl);
+    mutation.mutate(dataUrl);
+  }, [mutation]);
+
+  const handleFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file");
       return;
     }
-    if (file.size > 8 * 1024 * 1024) {
-      toast.error("Image too large (max 8MB)");
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("Image too large (max 20MB)");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      setPreview(url);
-      mutation.mutate(url);
-    };
-    reader.readAsDataURL(file);
-  }, [mutation]);
+    try {
+      const compressed = await compressImage(file, { maxWidth: 1200, quality: 0.8 });
+      runScan(compressed);
+    } catch {
+      toast.error("Could not read image");
+    }
+  }, [runScan]);
 
   function onDrop(e: React.DragEvent) {
     e.preventDefault();
+    setDragOver(false);
     const f = e.dataTransfer.files[0];
     if (f) handleFile(f);
   }
+
+  const reset = useCallback(() => {
+    setPreview(null);
+    setEditedText("");
+    setPdfUrl(null);
+    mutation.reset();
+  }, [mutation]);
+
+  const downloadImage = useCallback(() => {
+    if (!preview) return;
+    const a = document.createElement("a");
+    a.href = preview;
+    a.download = `prescription-${Date.now()}.jpg`;
+    a.click();
+  }, [preview]);
 
   const result = mutation.data;
 
@@ -105,35 +128,33 @@ function ScannerPage() {
           <CardContent>
             {!preview ? (
               <div
-                onDragOver={(e) => e.preventDefault()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOver(true);
+                }}
+                onDragLeave={() => setDragOver(false)}
                 onDrop={onDrop}
-                className="flex h-80 flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-secondary/30 p-6 text-center"
+                className={`flex h-80 flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+                  dragOver ? "border-primary bg-primary/5" : "border-border bg-secondary/30"
+                }`}
               >
                 <Upload className="mb-3 h-10 w-10 text-muted-foreground" />
-                <p className="text-sm font-medium">Drag and drop, or pick a file</p>
-                <p className="mt-1 text-xs text-muted-foreground">PNG, JPG up to 8MB</p>
-                <div className="mt-4 flex gap-2">
-                  <Button size="sm" onClick={() => fileRef.current?.click()}>
-                    <FileImage className="mr-2 h-4 w-4" />
-                    Choose file
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => cameraRef.current?.click()}>
+                <p className="text-sm font-medium">Drag &amp; drop, capture, or upload an image</p>
+                <p className="mt-1 text-xs text-muted-foreground">PNG / JPG · auto-compressed to 1200px</p>
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  <Button size="sm" onClick={() => setCameraOpen(true)}>
                     <Camera className="mr-2 h-4 w-4" />
-                    Camera
+                    Open Camera
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => fileRef.current?.click()}>
+                    <FileImage className="mr-2 h-4 w-4" />
+                    Upload Image
                   </Button>
                 </div>
                 <input
                   ref={fileRef}
                   type="file"
                   accept="image/*"
-                  className="hidden"
-                  onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
-                />
-                <input
-                  ref={cameraRef}
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
                   className="hidden"
                   onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
                 />
@@ -145,17 +166,20 @@ function ScannerPage() {
                   alt="Prescription"
                   className="max-h-[420px] w-full rounded-lg border border-border object-contain bg-secondary/30"
                 />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setPreview(null);
-                    setEditedText("");
-                    mutation.reset();
-                  }}
-                >
-                  Upload another
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" onClick={reset}>
+                    <RotateCcw className="mr-2 h-4 w-4" /> Re-scan
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={downloadImage}>
+                    <Download className="mr-2 h-4 w-4" /> Download
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={reset}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                  </Button>
+                  <Button size="sm" variant="secondary" onClick={() => setCameraOpen(true)}>
+                    <Camera className="mr-2 h-4 w-4" /> Recapture
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
@@ -359,6 +383,12 @@ function ScannerPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      <CameraCapture
+        open={cameraOpen}
+        onOpenChange={setCameraOpen}
+        onCapture={(dataUrl) => runScan(dataUrl)}
+      />
     </div>
   );
 }
