@@ -11,30 +11,46 @@ export const searchMedicines = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => SearchInput.parse(d))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const from = (data.page - 1) * data.limit;
-    const to = from + data.limit - 1;
+    const orFilter =
+      data.q && data.q.trim()
+        ? (() => {
+            const q = data.q.trim().replace(/,/g, " ").replace(/[%_]/g, " ");
+            return `medicine_name.ilike.%${q}%,composition.ilike.%${q}%,manufacturer.ilike.%${q}%,generic_name.ilike.%${q}%`;
+          })()
+        : null;
 
-    let query = supabaseAdmin
+    // 1) Count first so we can clamp the page and avoid PostgREST 416 errors
+    //    when the requested range exceeds the filtered row count.
+    const countQ = supabaseAdmin
       .from("medicines")
-      .select("*", { count: "exact" })
-      .order("medicine_name")
-      .range(from, to);
-
-    if (data.q && data.q.trim()) {
-      const q = data.q.trim().replace(/,/g, " ").replace(/[%_]/g, " ");
-      query = query.or(
-        `medicine_name.ilike.%${q}%,composition.ilike.%${q}%,manufacturer.ilike.%${q}%,generic_name.ilike.%${q}%`,
-      );
-    }
-
-    const { data: rows, error, count } = await query;
-    if (error) throw new Error(error.message);
+      .select("*", { count: "exact", head: true });
+    const { count, error: countError } = await (orFilter ? countQ.or(orFilter) : countQ);
+    if (countError) throw new Error(countError.message);
 
     const total = count ?? 0;
+    const totalPages = Math.max(1, Math.ceil(total / data.limit));
+    const page = Math.min(Math.max(1, data.page), totalPages);
+    const from = (page - 1) * data.limit;
+    const to = from + data.limit - 1;
+
+    let rows: Awaited<
+      ReturnType<typeof supabaseAdmin.from<"medicines", never>>["select"]
+    >["data"] = [];
+    if (total > 0) {
+      const dataQ = supabaseAdmin
+        .from("medicines")
+        .select("*")
+        .order("medicine_name")
+        .range(from, to);
+      const { data: result, error } = await (orFilter ? dataQ.or(orFilter) : dataQ);
+      if (error) throw new Error(error.message);
+      rows = result ?? [];
+    }
+
     return {
       total_records: total,
-      current_page: data.page,
-      total_pages: Math.max(1, Math.ceil(total / data.limit)),
+      current_page: page,
+      total_pages: totalPages,
       limit: data.limit,
       medicines: rows ?? [],
     };
