@@ -383,6 +383,12 @@ function ScannerPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      <CameraCapture
+        open={cameraOpen}
+        onOpenChange={setCameraOpen}
+        onCapture={(dataUrl) => runScan(dataUrl)}
+      />
     </div>
   );
 }
