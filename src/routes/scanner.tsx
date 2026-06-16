@@ -128,35 +128,33 @@ function ScannerPage() {
           <CardContent>
             {!preview ? (
               <div
-                onDragOver={(e) => e.preventDefault()}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOver(true);
+                }}
+                onDragLeave={() => setDragOver(false)}
                 onDrop={onDrop}
-                className="flex h-80 flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-secondary/30 p-6 text-center"
+                className={`flex h-80 flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+                  dragOver ? "border-primary bg-primary/5" : "border-border bg-secondary/30"
+                }`}
               >
                 <Upload className="mb-3 h-10 w-10 text-muted-foreground" />
-                <p className="text-sm font-medium">Drag and drop, or pick a file</p>
-                <p className="mt-1 text-xs text-muted-foreground">PNG, JPG up to 8MB</p>
-                <div className="mt-4 flex gap-2">
-                  <Button size="sm" onClick={() => fileRef.current?.click()}>
-                    <FileImage className="mr-2 h-4 w-4" />
-                    Choose file
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => cameraRef.current?.click()}>
+                <p className="text-sm font-medium">Drag &amp; drop, capture, or upload an image</p>
+                <p className="mt-1 text-xs text-muted-foreground">PNG / JPG · auto-compressed to 1200px</p>
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  <Button size="sm" onClick={() => setCameraOpen(true)}>
                     <Camera className="mr-2 h-4 w-4" />
-                    Camera
+                    Open Camera
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => fileRef.current?.click()}>
+                    <FileImage className="mr-2 h-4 w-4" />
+                    Upload Image
                   </Button>
                 </div>
                 <input
                   ref={fileRef}
                   type="file"
                   accept="image/*"
-                  className="hidden"
-                  onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
-                />
-                <input
-                  ref={cameraRef}
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
                   className="hidden"
                   onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
                 />
@@ -168,17 +166,20 @@ function ScannerPage() {
                   alt="Prescription"
                   className="max-h-[420px] w-full rounded-lg border border-border object-contain bg-secondary/30"
                 />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setPreview(null);
-                    setEditedText("");
-                    mutation.reset();
-                  }}
-                >
-                  Upload another
-                </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm" onClick={reset}>
+                    <RotateCcw className="mr-2 h-4 w-4" /> Re-scan
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={downloadImage}>
+                    <Download className="mr-2 h-4 w-4" /> Download
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={reset}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                  </Button>
+                  <Button size="sm" variant="secondary" onClick={() => setCameraOpen(true)}>
+                    <Camera className="mr-2 h-4 w-4" /> Recapture
+                  </Button>
+                </div>
               </div>
             )}
           </CardContent>
