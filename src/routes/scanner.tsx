@@ -37,8 +37,9 @@ function ScannerPage() {
   const [editedText, setEditedText] = useState("");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const cameraRef = useRef<HTMLInputElement>(null);
   const qc = useQueryClient();
   const fn = useServerFn(scanPrescription);
 
@@ -63,29 +64,49 @@ function ScannerPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const handleFile = useCallback((file: File) => {
+  const runScan = useCallback((dataUrl: string) => {
+    setPreview(dataUrl);
+    mutation.mutate(dataUrl);
+  }, [mutation]);
+
+  const handleFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file");
       return;
     }
-    if (file.size > 8 * 1024 * 1024) {
-      toast.error("Image too large (max 8MB)");
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("Image too large (max 20MB)");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      setPreview(url);
-      mutation.mutate(url);
-    };
-    reader.readAsDataURL(file);
-  }, [mutation]);
+    try {
+      const compressed = await compressImage(file, { maxWidth: 1200, quality: 0.8 });
+      runScan(compressed);
+    } catch {
+      toast.error("Could not read image");
+    }
+  }, [runScan]);
 
   function onDrop(e: React.DragEvent) {
     e.preventDefault();
+    setDragOver(false);
     const f = e.dataTransfer.files[0];
     if (f) handleFile(f);
   }
+
+  const reset = useCallback(() => {
+    setPreview(null);
+    setEditedText("");
+    setPdfUrl(null);
+    mutation.reset();
+  }, [mutation]);
+
+  const downloadImage = useCallback(() => {
+    if (!preview) return;
+    const a = document.createElement("a");
+    a.href = preview;
+    a.download = `prescription-${Date.now()}.jpg`;
+    a.click();
+  }, [preview]);
 
   const result = mutation.data;
 
