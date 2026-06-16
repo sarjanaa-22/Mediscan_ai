@@ -33,9 +33,8 @@ export const searchMedicines = createServerFn({ method: "GET" })
     const from = (page - 1) * data.limit;
     const to = from + data.limit - 1;
 
-    let rows: Awaited<
-      ReturnType<typeof supabaseAdmin.from<"medicines", never>>["select"]
-    >["data"] = [];
+    type MedicineRow = Database["public"]["Tables"]["medicines"]["Row"];
+    let rows: MedicineRow[] = [];
     if (total > 0) {
       const dataQ = supabaseAdmin
         .from("medicines")
