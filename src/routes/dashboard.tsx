@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardStats } from "@/lib/dashboard.functions";
+import { useAuth } from "@/lib/auth-context";
 import { ScanLine, ShieldCheck, Gauge, FlaskConical, Pill, FileText, ArrowRight, Database } from "lucide-react";
 import {
   LineChart,
@@ -28,6 +29,8 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function Dashboard() {
+  const { user, profile, isGuest } = useAuth();
+  const displayName = profile?.full_name || user?.email?.split("@")[0] || (isGuest ? "Guest" : "there");
   const fn = useServerFn(getDashboardStats);
   const { data, isLoading } = useQuery({
     queryKey: ["dashboard-stats"],
@@ -91,7 +94,7 @@ function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Welcome back, {displayName}</h1>
         <p className="text-sm text-muted-foreground">
           AI-powered prescription digitization and clinical decision support.
         </p>
