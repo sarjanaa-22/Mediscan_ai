@@ -31,12 +31,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try { localStorage.removeItem(GUEST_KEY); } catch {}
         // Defer profile fetch to avoid deadlocks
         setTimeout(() => {
-          supabase
+          (supabase as any)
             .from("profiles")
             .select("full_name, email")
             .eq("id", sess.user.id)
             .maybeSingle()
-            .then(({ data }) => setProfile(data ?? { full_name: null, email: sess.user.email ?? null }));
+            .then(({ data }: { data: { full_name: string | null; email: string | null } | null }) =>
+              setProfile(data ?? { full_name: null, email: sess.user.email ?? null }),
+            );
         }, 0);
       } else {
         setProfile(null);
