@@ -118,7 +118,7 @@ export const scanPrescription = createServerFn({ method: "POST" })
     const { getOptionalUserId } = await import("./auth-helpers.server");
     const userId = await getOptionalUserId();
 
-    let recordId = crypto.randomUUID();
+    let recordId: string = crypto.randomUUID();
     if (userId) {
       const { data: row, error: insErr } = await supabaseAdmin
         .from("prescriptions")
