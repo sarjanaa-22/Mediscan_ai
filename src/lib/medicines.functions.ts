@@ -57,20 +57,28 @@ export const searchMedicines = createServerFn({ method: "GET" })
   });
 
 export const listPrescriptions = createServerFn({ method: "GET" }).handler(async () => {
+  const { getOptionalUserId } = await import("./auth-helpers.server");
+  const userId = await getOptionalUserId();
+  if (!userId) return [];
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("prescriptions")
     .select("*")
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
 });
 
 export const listLabReports = createServerFn({ method: "GET" }).handler(async () => {
+  const { getOptionalUserId } = await import("./auth-helpers.server");
+  const userId = await getOptionalUserId();
+  if (!userId) return [];
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("lab_reports")
     .select("*")
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return data ?? [];
@@ -81,9 +89,17 @@ const DeleteInput = z.object({ id: z.string().uuid(), kind: z.enum(["prescriptio
 export const deleteRecord = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => DeleteInput.parse(d))
   .handler(async ({ data }) => {
+    const { getOptionalUserId } = await import("./auth-helpers.server");
+    const userId = await getOptionalUserId();
+    if (!userId) throw new Error("Sign in required to delete records");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const table = data.kind === "prescription" ? "prescriptions" : "lab_reports";
-    const { error } = await supabaseAdmin.from(table).delete().eq("id", data.id);
+    const { error } = await supabaseAdmin
+      .from(table)
+      .delete()
+      .eq("id", data.id)
+      .eq("user_id", userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
