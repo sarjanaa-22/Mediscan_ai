@@ -115,34 +115,44 @@ export const scanPrescription = createServerFn({ method: "POST" })
 
     const elapsed = Date.now() - started;
 
-    const { data: row, error: insErr } = await supabaseAdmin
-      .from("prescriptions")
-      .insert({
-        image_path: null,
-        extracted_text: parsed.extracted_text,
-        confidence_score: baseConf,
-      })
-      .select("id")
-      .single();
-    if (insErr) throw new Error(insErr.message);
+    const { getOptionalUserId } = await import("./auth-helpers.server");
+    const userId = await getOptionalUserId();
 
-    if (detected.length > 0) {
-      await supabaseAdmin.from("verification_logs").insert(
-        detected.map((d) => ({
-          prescription_id: row.id,
-          medicine_name: d.matched_medicine?.name ?? d.suggested ?? d.raw,
-          match_score: d.match_score,
-          verification_status: d.matched_medicine
-            ? d.match_method === "exact"
-              ? "verified"
-              : "needs_review"
-            : "unknown",
-        })),
-      );
+    let recordId: string = crypto.randomUUID() as string;
+    if (userId) {
+      const { data: row, error: insErr } = await supabaseAdmin
+        .from("prescriptions")
+        .insert({
+          image_path: null,
+          extracted_text: parsed.extracted_text,
+          confidence_score: baseConf,
+          user_id: userId,
+        })
+        .select("id")
+        .single();
+      if (insErr) throw new Error(insErr.message);
+      recordId = row.id as string;
+
+      if (detected.length > 0) {
+        await supabaseAdmin.from("verification_logs").insert(
+          detected.map((d) => ({
+            prescription_id: recordId,
+            user_id: userId,
+            medicine_name: d.matched_medicine?.name ?? d.suggested ?? d.raw,
+            match_score: d.match_score,
+            verification_status: d.matched_medicine
+              ? d.match_method === "exact"
+                ? "verified"
+                : "needs_review"
+              : "unknown",
+          })),
+        );
+      }
     }
 
     return {
-      id: row.id as string,
+      id: recordId,
+
       extracted_text: parsed.extracted_text,
       confidence: baseConf,
       recognition_quality: parsed.recognition_quality ?? "good",

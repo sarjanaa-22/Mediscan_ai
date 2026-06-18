@@ -20,18 +20,21 @@ export type Database = {
           extracted_data: Json | null
           id: string
           report_path: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           extracted_data?: Json | null
           id?: string
           report_path?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           extracted_data?: Json | null
           id?: string
           report_path?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -93,6 +96,7 @@ export type Database = {
           extracted_text: string | null
           id: string
           image_path: string | null
+          user_id: string | null
         }
         Insert: {
           confidence_score?: number | null
@@ -100,6 +104,7 @@ export type Database = {
           extracted_text?: string | null
           id?: string
           image_path?: string | null
+          user_id?: string | null
         }
         Update: {
           confidence_score?: number | null
@@ -107,6 +112,7 @@ export type Database = {
           extracted_text?: string | null
           id?: string
           image_path?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -141,6 +147,7 @@ export type Database = {
           match_score: number | null
           medicine_name: string | null
           prescription_id: string
+          user_id: string | null
           verification_status: string | null
         }
         Insert: {
@@ -149,6 +156,7 @@ export type Database = {
           match_score?: number | null
           medicine_name?: string | null
           prescription_id: string
+          user_id?: string | null
           verification_status?: string | null
         }
         Update: {
@@ -157,6 +165,7 @@ export type Database = {
           match_score?: number | null
           medicine_name?: string | null
           prescription_id?: string
+          user_id?: string | null
           verification_status?: string | null
         }
         Relationships: [

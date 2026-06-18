@@ -2,17 +2,24 @@ import { createServerFn } from "@tanstack/react-start";
 
 export const getDashboardStats = createServerFn({ method: "GET" }).handler(async () => {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { getOptionalUserId } = await import("./auth-helpers.server");
+  const userId = await getOptionalUserId();
 
+  const rxBase = supabaseAdmin
+    .from("prescriptions")
+    .select("id, confidence_score, created_at", { count: "exact" })
+    .order("created_at", { ascending: false });
+  const labBase = supabaseAdmin.from("lab_reports").select("id, created_at", { count: "exact" });
+  const verBase = supabaseAdmin
+    .from("verification_logs")
+    .select("verification_status, created_at, medicine_name, match_score", { count: "exact" })
+    .order("created_at", { ascending: false });
+
+  const emptyRes = { data: [] as never[], count: 0, error: null } as unknown;
   const [rxRes, labRes, verRes, medRes, medLatest] = await Promise.all([
-    supabaseAdmin
-      .from("prescriptions")
-      .select("id, confidence_score, created_at", { count: "exact" })
-      .order("created_at", { ascending: false }),
-    supabaseAdmin.from("lab_reports").select("id, created_at", { count: "exact" }),
-    supabaseAdmin
-      .from("verification_logs")
-      .select("verification_status, created_at, medicine_name, match_score", { count: "exact" })
-      .order("created_at", { ascending: false }),
+    userId ? rxBase.eq("user_id", userId) : Promise.resolve(emptyRes as Awaited<typeof rxBase>),
+    userId ? labBase.eq("user_id", userId) : Promise.resolve(emptyRes as Awaited<typeof labBase>),
+    userId ? verBase.eq("user_id", userId) : Promise.resolve(emptyRes as Awaited<typeof verBase>),
     supabaseAdmin.from("medicines").select("id", { count: "exact", head: true }),
     supabaseAdmin
       .from("medicines")
@@ -21,6 +28,8 @@ export const getDashboardStats = createServerFn({ method: "GET" }).handler(async
       .limit(1)
       .maybeSingle(),
   ]);
+
+
 
   const rxs = rxRes.data ?? [];
   const vers = verRes.data ?? [];

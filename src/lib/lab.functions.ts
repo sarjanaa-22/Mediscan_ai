@@ -58,15 +58,24 @@ export const analyzeLabReport = createServerFn({ method: "POST" })
     const parsed = tryParseJson<LabAnalysis>(raw);
     if (!parsed) throw new Error("Could not parse lab report. Try a clearer file.");
 
-    const { data: row, error } = await supabaseAdmin
-      .from("lab_reports")
-      .insert({
-        report_path: null,
-        extracted_data: parsed,
-      })
-      .select("id")
-      .single();
-    if (error) throw new Error(error.message);
+    const { getOptionalUserId } = await import("./auth-helpers.server");
+    const userId = await getOptionalUserId();
 
-    return { id: row.id as string, analysis: parsed };
+    let id: string = crypto.randomUUID() as string;
+    if (userId) {
+      const { data: row, error } = await supabaseAdmin
+        .from("lab_reports")
+        .insert({
+          report_path: null,
+          extracted_data: parsed,
+          user_id: userId,
+        })
+        .select("id")
+        .single();
+      if (error) throw new Error(error.message);
+      id = row.id as string;
+    }
+
+    return { id, analysis: parsed };
   });
+
