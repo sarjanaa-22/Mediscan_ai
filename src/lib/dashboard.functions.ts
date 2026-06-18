@@ -15,10 +15,11 @@ export const getDashboardStats = createServerFn({ method: "GET" }).handler(async
     .select("verification_status, created_at, medicine_name, match_score", { count: "exact" })
     .order("created_at", { ascending: false });
 
+  const emptyRes = { data: [] as never[], count: 0, error: null } as unknown;
   const [rxRes, labRes, verRes, medRes, medLatest] = await Promise.all([
-    userId ? rxBase.eq("user_id", userId) : Promise.resolve({ data: [], count: 0 } as Awaited<typeof rxBase>),
-    userId ? labBase.eq("user_id", userId) : Promise.resolve({ data: [], count: 0 } as Awaited<typeof labBase>),
-    userId ? verBase.eq("user_id", userId) : Promise.resolve({ data: [], count: 0 } as Awaited<typeof verBase>),
+    userId ? rxBase.eq("user_id", userId) : Promise.resolve(emptyRes as Awaited<typeof rxBase>),
+    userId ? labBase.eq("user_id", userId) : Promise.resolve(emptyRes as Awaited<typeof labBase>),
+    userId ? verBase.eq("user_id", userId) : Promise.resolve(emptyRes as Awaited<typeof verBase>),
     supabaseAdmin.from("medicines").select("id", { count: "exact", head: true }),
     supabaseAdmin
       .from("medicines")
@@ -27,6 +28,7 @@ export const getDashboardStats = createServerFn({ method: "GET" }).handler(async
       .limit(1)
       .maybeSingle(),
   ]);
+
 
 
   const rxs = rxRes.data ?? [];
