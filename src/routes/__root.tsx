@@ -69,7 +69,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "google-site-verification", content: "drASSaKzaRsxlzUeh_0XSddl-a9NeWNrvrWPhV8LKJ0" },
       { title: "MediScan AI — AI Prescription Digitization & Clinical Decision Support" },
       { name: "description", content: "AI-powered platform that digitizes handwritten prescriptions, verifies medicines and analyzes lab reports in seconds." },
       { property: "og:title", content: "MediScan AI — AI Prescription Digitization & Clinical Decision Support" },
