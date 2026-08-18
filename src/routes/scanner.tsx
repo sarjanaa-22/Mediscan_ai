@@ -26,7 +26,18 @@ import {
 } from "recharts";
 
 export const Route = createFileRoute("/scanner")({
-  head: () => ({ meta: [{ title: "Prescription Scanner — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Prescription Scanner — MediScan AI" },
+      { name: "description", content: "Scan or photograph a handwritten prescription and get AI-extracted medicines, confidence scores and a downloadable PDF report." },
+      { property: "og:title", content: "Prescription Scanner — MediScan AI" },
+      { property: "og:description", content: "Scan or photograph a handwritten prescription and get AI-extracted medicines, confidence scores and a downloadable PDF report." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/scanner" },
+      { name: "twitter:title", content: "Prescription Scanner — MediScan AI" },
+      { name: "twitter:description", content: "Scan or photograph a handwritten prescription and get AI-extracted medicines, confidence scores and a downloadable PDF report." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/scanner" }],
+  }),
   component: ScannerPage,
 });
 

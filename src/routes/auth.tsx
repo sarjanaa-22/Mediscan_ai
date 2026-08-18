@@ -14,7 +14,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Sign in — MediScan AI" },
+      { name: "description", content: "Sign in, create an account, or continue as a guest to use MediScan AI prescription and lab report analysis tools." },
+      { property: "og:title", content: "Sign in — MediScan AI" },
+      { property: "og:description", content: "Sign in, create an account, or continue as a guest to use MediScan AI prescription and lab report analysis tools." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/auth" },
+      { name: "twitter:title", content: "Sign in — MediScan AI" },
+      { name: "twitter:description", content: "Sign in, create an account, or continue as a guest to use MediScan AI prescription and lab report analysis tools." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/auth" }],
+  }),
   component: AuthPage,
 });
 

@@ -24,7 +24,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Dashboard — MediScan AI" },
+      { name: "description", content: "Track prescription scans, OCR accuracy trends, medicine verification results and lab report activity in one clinical dashboard." },
+      { property: "og:title", content: "Dashboard — MediScan AI" },
+      { property: "og:description", content: "Track prescription scans, OCR accuracy trends, medicine verification results and lab report activity in one clinical dashboard." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/dashboard" },
+      { name: "twitter:title", content: "Dashboard — MediScan AI" },
+      { name: "twitter:description", content: "Track prescription scans, OCR accuracy trends, medicine verification results and lab report activity in one clinical dashboard." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/dashboard" }],
+  }),
   component: Dashboard,
 });
 

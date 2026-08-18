@@ -13,7 +13,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/reports")({
-  head: () => ({ meta: [{ title: "Reports — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Reports — MediScan AI" },
+      { name: "description", content: "Browse, preview and download your saved prescription digitizations and AI lab report analyses as PDF, JSON or CSV." },
+      { property: "og:title", content: "Reports — MediScan AI" },
+      { property: "og:description", content: "Browse, preview and download your saved prescription digitizations and AI lab report analyses as PDF, JSON or CSV." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/reports" },
+      { name: "twitter:title", content: "Reports — MediScan AI" },
+      { name: "twitter:description", content: "Browse, preview and download your saved prescription digitizations and AI lab report analyses as PDF, JSON or CSV." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/reports" }],
+  }),
   component: ReportsPage,
 });
 

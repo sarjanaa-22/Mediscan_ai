@@ -3,7 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [{ title: "Settings — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Settings — MediScan AI" },
+      { name: "description", content: "Manage your MediScan AI preferences, appearance theme, OCR defaults and account details." },
+      { property: "og:title", content: "Settings — MediScan AI" },
+      { property: "og:description", content: "Manage your MediScan AI preferences, appearance theme, OCR defaults and account details." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/settings" },
+      { name: "twitter:title", content: "Settings — MediScan AI" },
+      { name: "twitter:description", content: "Manage your MediScan AI preferences, appearance theme, OCR defaults and account details." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/settings" }],
+  }),
   component: SettingsPage,
 });
 
