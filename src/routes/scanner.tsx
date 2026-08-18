@@ -26,7 +26,18 @@ import {
 } from "recharts";
 
 export const Route = createFileRoute("/scanner")({
-  head: () => ({ meta: [{ title: "Prescription Scanner — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Prescription Scanner — MediScan AI" },
+      { name: "description", content: "Scan or photograph a handwritten prescription and get AI-extracted medicines, confidence scores and a downloadable PDF report." },
+      { property: "og:title", content: "Prescription Scanner — MediScan AI" },
+      { property: "og:description", content: "Scan or photograph a handwritten prescription and get AI-extracted medicines, confidence scores and a downloadable PDF report." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/scanner" },
+      { name: "twitter:title", content: "Prescription Scanner — MediScan AI" },
+      { name: "twitter:description", content: "Scan or photograph a handwritten prescription and get AI-extracted medicines, confidence scores and a downloadable PDF report." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/scanner" }],
+  }),
   component: ScannerPage,
 });
 
@@ -118,6 +129,8 @@ function ScannerPage() {
           Upload or capture a handwritten prescription — we'll digitize it instantly.
         </p>
       </div>
+
+      <h2 className="text-lg font-semibold tracking-tight">Scan and results</h2>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* LEFT: Image */}

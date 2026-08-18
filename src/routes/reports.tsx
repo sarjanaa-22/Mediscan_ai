@@ -13,7 +13,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/reports")({
-  head: () => ({ meta: [{ title: "Reports — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Reports — MediScan AI" },
+      { name: "description", content: "Browse, preview and download your saved prescription digitizations and AI lab report analyses as PDF, JSON or CSV." },
+      { property: "og:title", content: "Reports — MediScan AI" },
+      { property: "og:description", content: "Browse, preview and download your saved prescription digitizations and AI lab report analyses as PDF, JSON or CSV." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/reports" },
+      { name: "twitter:title", content: "Reports — MediScan AI" },
+      { name: "twitter:description", content: "Browse, preview and download your saved prescription digitizations and AI lab report analyses as PDF, JSON or CSV." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/reports" }],
+  }),
   component: ReportsPage,
 });
 
@@ -104,6 +115,7 @@ function ReportsPage() {
                     size="sm"
                     variant="ghost"
                     className="text-destructive"
+                    aria-label="Delete prescription report"
                     onClick={() => del.mutate({ id: r.id, kind: "prescription" })}
                   >
                     <Trash2 className="h-4 w-4" />
@@ -150,6 +162,7 @@ function ReportsPage() {
                     size="sm"
                     variant="ghost"
                     className="text-destructive"
+                    aria-label="Delete lab report"
                     onClick={() => del.mutate({ id: r.id, kind: "lab" })}
                   >
                     <Trash2 className="h-4 w-4" />

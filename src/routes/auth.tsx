@@ -14,7 +14,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Sign in — MediScan AI" },
+      { name: "description", content: "Sign in, create an account, or continue as a guest to use MediScan AI prescription and lab report analysis tools." },
+      { property: "og:title", content: "Sign in — MediScan AI" },
+      { property: "og:description", content: "Sign in, create an account, or continue as a guest to use MediScan AI prescription and lab report analysis tools." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/auth" },
+      { name: "twitter:title", content: "Sign in — MediScan AI" },
+      { name: "twitter:description", content: "Sign in, create an account, or continue as a guest to use MediScan AI prescription and lab report analysis tools." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/auth" }],
+  }),
   component: AuthPage,
 });
 
@@ -127,7 +138,7 @@ function AuthPage() {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
             <Stethoscope className="h-7 w-7" />
           </div>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight">MediScan AI</h1>
+          <h1 className="mt-4 text-center text-2xl font-bold tracking-tight">MediScan AI — Medical Document Analysis</h1>
           <p className="text-sm text-muted-foreground">Clinical Decision Support Platform</p>
         </div>
 

@@ -19,7 +19,18 @@ import {
 import { Search, ChevronLeft, ChevronRight, Database, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/medicines")({
-  head: () => ({ meta: [{ title: "Medicines Workspace — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Medicines Workspace — MediScan AI" },
+      { name: "description", content: "Search a catalog of over 11,000 medicines by brand name, composition or manufacturer and verify prescribed drugs instantly." },
+      { property: "og:title", content: "Medicines Workspace — MediScan AI" },
+      { property: "og:description", content: "Search a catalog of over 11,000 medicines by brand name, composition or manufacturer and verify prescribed drugs instantly." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/medicines" },
+      { name: "twitter:title", content: "Medicines Workspace — MediScan AI" },
+      { name: "twitter:description", content: "Search a catalog of over 11,000 medicines by brand name, composition or manufacturer and verify prescribed drugs instantly." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/medicines" }],
+  }),
   component: MedicinesPage,
 });
 

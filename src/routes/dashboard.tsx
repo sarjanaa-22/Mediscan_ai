@@ -24,7 +24,18 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — MediScan AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Dashboard — MediScan AI" },
+      { name: "description", content: "Track prescription scans, OCR accuracy trends, medicine verification results and lab report activity in one clinical dashboard." },
+      { property: "og:title", content: "Dashboard — MediScan AI" },
+      { property: "og:description", content: "Track prescription scans, OCR accuracy trends, medicine verification results and lab report activity in one clinical dashboard." },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/dashboard" },
+      { name: "twitter:title", content: "Dashboard — MediScan AI" },
+      { name: "twitter:description", content: "Track prescription scans, OCR accuracy trends, medicine verification results and lab report activity in one clinical dashboard." },
+    ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/dashboard" }],
+  }),
   component: Dashboard,
 });
 
@@ -94,11 +105,14 @@ function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Welcome back, {displayName}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">MediScan AI Dashboard</h1>
+        <p className="text-sm text-muted-foreground">Welcome back, {displayName}</p>
         <p className="text-sm text-muted-foreground">
           AI-powered prescription digitization and clinical decision support.
         </p>
       </div>
+
+      <h2 className="text-lg font-semibold tracking-tight">Quick actions</h2>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {quickActions.map((a) => (
@@ -153,6 +167,8 @@ function Dashboard() {
           </div>
         </CardContent>
       </Card>
+
+      <h2 className="text-lg font-semibold tracking-tight">Key metrics</h2>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
