@@ -162,6 +162,7 @@ function ReportsPage() {
                     size="sm"
                     variant="ghost"
                     className="text-destructive"
+                    aria-label="Delete lab report"
                     onClick={() => del.mutate({ id: r.id, kind: "lab" })}
                   >
                     <Trash2 className="h-4 w-4" />
