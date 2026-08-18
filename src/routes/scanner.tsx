@@ -130,6 +130,8 @@ function ScannerPage() {
         </p>
       </div>
 
+      <h2 className="text-lg font-semibold tracking-tight">Scan and results</h2>
+
       <div className="grid gap-6 lg:grid-cols-2">
         {/* LEFT: Image */}
         <Card className="card-elevated">

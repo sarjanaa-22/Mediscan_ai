@@ -115,6 +115,8 @@ function LabPage() {
         </p>
       </div>
 
+      <h2 className="text-lg font-semibold tracking-tight">Report upload</h2>
+
       <Card className="card-elevated">
         <CardContent className="pt-6">
           {!file ? (
