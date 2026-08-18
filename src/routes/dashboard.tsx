@@ -105,7 +105,8 @@ function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Welcome back, {displayName}</h1>
+        <h1 className="text-2xl font-bold tracking-tight">MediScan AI Dashboard</h1>
+        <p className="text-sm text-muted-foreground">Welcome back, {displayName}</p>
         <p className="text-sm text-muted-foreground">
           AI-powered prescription digitization and clinical decision support.
         </p>

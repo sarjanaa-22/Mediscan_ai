@@ -115,6 +115,7 @@ function ReportsPage() {
                     size="sm"
                     variant="ghost"
                     className="text-destructive"
+                    aria-label="Delete prescription report"
                     onClick={() => del.mutate({ id: r.id, kind: "prescription" })}
                   >
                     <Trash2 className="h-4 w-4" />

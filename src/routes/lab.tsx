@@ -44,9 +44,11 @@ export const Route = createFileRoute("/lab")({
         content:
           "Extract, analyze and explain lab, pathology and radiology reports in simple language.",
       },
+      { property: "og:url", content: "https://ai-mediscan.lovable.app/lab" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://ai-mediscan.lovable.app/lab" }],
   }),
   component: LabPage,
 });

@@ -115,7 +115,7 @@ export function CameraCapture({ open, onOpenChange, onCapture }: Props) {
 
         <div className="relative bg-black aspect-video flex items-center justify-center">
           {shot ? (
-            <img src={shot} alt="Captured" className="h-full w-full object-contain" />
+            <img src={shot} alt="Preview of the captured medical document" className="h-full w-full object-contain" />
           ) : (
             <>
               <video
