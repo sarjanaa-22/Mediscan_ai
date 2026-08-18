@@ -112,6 +112,8 @@ function Dashboard() {
         </p>
       </div>
 
+      <h2 className="text-lg font-semibold tracking-tight">Quick actions</h2>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {quickActions.map((a) => (
           <Link key={a.to} to={a.to} className="group">
@@ -165,6 +167,8 @@ function Dashboard() {
           </div>
         </CardContent>
       </Card>
+
+      <h2 className="text-lg font-semibold tracking-tight">Key metrics</h2>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
