@@ -138,7 +138,7 @@ function AuthPage() {
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20">
             <Stethoscope className="h-7 w-7" />
           </div>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight">MediScan AI</h1>
+          <h1 className="mt-4 text-center text-2xl font-bold tracking-tight">MediScan AI — Medical Document Analysis</h1>
           <p className="text-sm text-muted-foreground">Clinical Decision Support Platform</p>
         </div>
 
