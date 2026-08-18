@@ -1,508 +1,415 @@
-# MediScan Health
+# 🩺 MediScan AI
 
-Build a complete production-ready healthcare SaaS web application called:
+### AI-Powered Medical Report Analyzer & Health Insight Assistant
 
-MediScan AI – AI-Powered Prescription Digitization & Clinical Decision Support System
+> **Turn complex medical reports into simple, understandable insights.**
 
-Goal
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-MediScan_AI-blue?style=for-the-badge)](https://medi-scan-a-i.lovable.app/)
+[![Built with Lovable](https://img.shields.io/badge/Built%20with-Lovable-ff69b4?style=for-the-badge)](https://lovable.dev/)
+[![AI](https://img.shields.io/badge/AI-Powered-00A67E?style=for-the-badge)](#)
+[![HealthTech](https://img.shields.io/badge/Domain-HealthTech-4CAF50?style=for-the-badge)](#)
 
-Create a modern full-stack healthcare platform that can:
+---
 
-Digitize handwritten prescriptions
+## 🧠 About MediScan AI
 
-Recognize extremely poor doctor handwriting
+**MediScan AI** is an AI-powered healthcare assistant designed to make medical reports easier to understand.
 
-Extract medicines using AI
+Medical reports are often filled with technical terminology, numerical values, abbreviations, reference ranges, and complex findings that can be difficult for patients to interpret.
 
-Verify medicines against a medicine database
+MediScan AI bridges this gap by allowing users to upload a medical report and receive a **structured, easy-to-understand explanation** of the information contained in it.
 
-Analyze laboratory reports
+Instead of simply extracting text, the system aims to understand the report context, identify important findings, explain medical terminology, and highlight results that may require professional attention.
 
-Generate downloadable PDF reports
+> **Upload → Extract → Analyze → Explain → Understand**
 
-Display analytics dashboards
+---
 
-Support user authentication
+## ✨ Key Features
 
-Be deployable to Vercel (Frontend) and Render (Backend)
+### 📄 Smart Medical Report Analysis
 
-Generate a fully functional application with no placeholder pages.
+Upload a medical report and let the system extract and organize the important information.
 
-UI/UX Requirements
+* Lab reports
+* Blood test reports
+* Diagnostic reports
+* Radiology reports
+* Medical document images
 
-Create a premium healthcare design similar to modern medical SaaS platforms.
+---
 
-Requirements:
+### 🔍 Intelligent OCR Extraction
 
-Modern medical dashboard
+Extract useful information from uploaded medical documents, including:
 
-Responsive mobile and desktop design
+* Test names
+* Results
+* Units
+* Reference ranges
+* Findings
+* Medical terminology
+* Report impressions
 
-Dark mode
+The goal is to transform unstructured medical documents into structured information.
 
-Light mode
+---
 
-Smooth animations
+### 🧪 Laboratory Parameter Analysis
 
-Professional color palette
+Each detected parameter can be organized with:
 
-Sidebar navigation
+| Parameter  | Result | Unit     | Reference Range | Status       |
+| ---------- | -----: | -------- | --------------- | ------------ |
+| Hemoglobin |   13.8 | g/dL     | 12–16           | 🟢 Normal    |
+| HbA1c      |    8.2 | %        | Report-specific | 🔴 High      |
+| WBC        | 12,500 | cells/µL | Report-specific | 🟠 Attention |
 
-Top navbar
+The system prioritizes the **reference range provided by the laboratory** instead of blindly applying a universal range.
 
-Search functionality
+---
 
-Loading skeletons
+### 🧠 Medical Term Detection
 
-Toast notifications
+MediScan AI can identify important medical terminology and findings such as:
 
-Pages
+* Tumor
+* Meningioma
+* Lesion
+* Cyst
+* Nodule
+* Adenoma
+* Carcinoma
+* Anemia
+* Inflammation
+* Infection
+* Fibrosis
+* Thrombosis
+* Calcification
+* Edema
+* Hemorrhage
+* Hepatomegaly
+* Fatty liver
 
-Landing Page
+The system can then explain these terms in simpler language.
 
-Sections:
+---
 
-Hero Section
+### 💡 Medical Findings Explained
 
-Features
+Instead of simply displaying:
 
-OCR Technology
+> `Meningioma`
 
-Medicine Verification
+MediScan AI aims to provide contextual information such as:
 
-Lab Report Analysis
+**What is it?**
 
-Dashboard Preview
+A simple explanation of the medical term.
 
-Contact
+**What does the report say?**
 
-Footer
+The relevant finding extracted from the uploaded report.
 
-CTA:
-"Upload Prescription"
+**What can it mean?**
 
-Authentication
+A general explanation of the possible clinical significance.
 
-Login Page
+**Possible symptoms**
 
-Fields:
+Common symptoms associated with the finding when relevant.
 
-Email
+**What happens next?**
 
-Password
+General guidance based on the report and its recommendations.
 
-Register Page
+### ⚠️ Finding ≠ Diagnosis
 
-Fields:
+MediScan AI is designed to distinguish between:
 
-Name
+* **Confirmed diagnosis**
+* **Reported finding**
+* **Suspected / suggestive finding**
+* **Possible association**
+* **Medical term with unclear significance**
 
-Email
+For example:
 
-Password
+> `Mass lesion suggestive of meningioma`
 
-Confirm Password
+should **not** automatically become:
 
-JWT authentication support.
+> ❌ "You have meningioma."
 
-Dashboard
+Instead:
 
-Display cards:
+> ✅ "The report describes a finding that is suggestive of a meningioma. Further evaluation by a qualified healthcare professional is required."
 
-Total Prescriptions Processed
+This distinction is an important part of responsible AI-assisted healthcare.
 
-Medicines Verified
+---
 
-OCR Accuracy
+## 📊 Overall Report Summary
 
-Lab Reports Analyzed
+After analysis, the system can generate a simplified overview containing:
 
-Charts:
+### Overall Status
 
-OCR Accuracy Trend
+🟢 No significant abnormality detected
+🟡 Some results may need attention
+🟠 Important findings detected
+🔴 Potentially urgent finding mentioned in the report
 
-Medicine Verification Statistics
+### Key Findings
 
-Monthly Usage Analytics
+A concise summary of the most relevant information extracted from the report.
 
-Recent Activity Table.
+### Abnormal Results
 
-Prescription Scanner
+A focused view of parameters that fall outside the provided reference range.
 
-Features:
+### Medical Findings
 
-Drag and Drop Upload
+Important medical terms and findings detected in the report.
 
-Camera Upload
+---
 
-Image Preview
+## 🔄 How It Works
 
-OCR Processing
+```text
+              📄 Upload Medical Report
+                       │
+                       ▼
+                🔍 OCR Extraction
+                       │
+                       ▼
+              🧾 Extract Report Data
+                       │
+          ┌────────────┴────────────┐
+          ▼                         ▼
+    🧪 Lab Parameters          🧠 Medical Terms
+          │                         │
+          ▼                         ▼
+  Reference Range Analysis    Finding Detection
+          │                         │
+          └────────────┬────────────┘
+                       ▼
+                🤖 AI Analysis
+                       │
+                       ▼
+             💡 Explanation Engine
+                       │
+                       ▼
+             📊 Structured Summary
+                       │
+                       ▼
+              🩺 Suggested Next Steps
+```
 
-Display:
+---
 
-Left Side:
+## 🛠️ Technology Stack
 
-Uploaded Prescription Image
+### Frontend
 
-Right Side:
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* Responsive UI
 
-Extracted Text
+### AI / Processing
 
-Editable OCR text.
+* OCR / Document Processing
+* Natural Language Processing
+* Large Language Model based analysis
+* Medical terminology detection
+* Structured data extraction
 
-Show:
+### Backend / Services
 
-OCR Confidence Score
+* API-based AI processing
+* Secure environment variables
+* Database / authentication services where applicable
 
-Processing Time
+### Development
 
-Recognition Quality
+* Lovable
+* Git
+* GitHub
 
-OCR Engine Section
+---
 
-Display results from:
+## 🎯 Problem Statement
 
-TrOCR
+Medical reports contain valuable health information, but many patients struggle to understand them because of:
 
-PaddleOCR
+* Complex medical terminology
+* Unfamiliar abbreviations
+* Numerical test values
+* Reference ranges
+* Radiology terminology
+* Difficult-to-read report formats
 
-EasyOCR
+This creates a communication gap between **medical information and patient understanding**.
 
-Show:
+MediScan AI aims to reduce this gap by converting complex reports into **clear, structured, and understandable information**.
 
-Individual OCR outputs
+---
 
-Confidence score per engine
+## 💡 Why MediScan AI?
 
-Final merged output
+### Traditional Report
 
-Display confidence comparison chart.
+```text
+HbA1c: 8.2 %
+TSH: 6.5 mIU/L
+WBC: 12,500 cells/µL
+Extra-axial mass lesion...
+```
 
-Medicine Detection Page
+⬇️
 
-Extract medicines automatically.
+### MediScan AI
 
-Implement:
+```text
+⚠️ Some results may need attention
 
-Exact Matching
+HbA1c
+→ Elevated
+→ Represents average blood glucose
+→ May be associated with diabetes or
+  inadequate glucose control
+
+Medical Finding
+→ Mass lesion
+→ Report context detected
+→ Requires professional interpretation
+```
+
+The goal is not just to **read the report**.
+
+The goal is to **help the user understand what they are reading**.
+
+---
+
+## 🚀 Future Enhancements
+
+* 🌐 Multi-language medical explanations
+* 📈 Compare current and previous reports
+* 📊 Health trend visualization
+* 🧠 Expanded medical terminology knowledge base
+* 📄 PDF report generation
+* 🎙️ Voice-based report explanation
+* 🏥 Doctor/Patient dashboard
+* 🔐 Advanced medical-data privacy controls
+* 📱 Progressive Web App
+* 🤖 Medical Q&A assistant based on uploaded reports
+* 🔎 Evidence-backed medical explanations
+* 🧬 More advanced pathology and radiology report understanding
+
+---
+
+## 🔐 Privacy & Safety
+
+Medical information is highly sensitive.
+
+MediScan AI should follow privacy-first principles when handling uploaded reports.
+
+The application should:
+
+* Avoid exposing API keys in frontend code
+* Use secure backend/API communication
+* Minimize unnecessary storage of uploaded reports
+* Protect user authentication and report data
+* Avoid exposing patient information unnecessarily
+
+---
+
+## ⚠️ Medical Disclaimer
+
+**MediScan AI is an informational and educational tool.**
+
+It is **not a replacement for a doctor, radiologist, pathologist, or other qualified healthcare professional**.
+
+AI-generated explanations may contain errors and should not be used as the sole basis for diagnosis, treatment, medication changes, or emergency decisions.
+
+Users should discuss abnormal, concerning, or unclear findings with a qualified healthcare professional.
+
+---
+
+## 🌐 Live Demo
+
+### 👉 [Launch MediScan AI](https://medi-scan-a-i.lovable.app/)
+
+Try the application and explore the medical report analysis workflow.
+
+---
+
+## 📸 Application Preview
+
+> Add screenshots of your:
+>
+> * Login page
+> * Dashboard
+> * Report upload page
+> * OCR extraction
+> * Lab result analysis
+> * Medical findings explanation
+> * Final report summary
+>
+> here to make the GitHub repository more attractive.
 
 Example:
-Paracetamol → Paracetamol
 
-Abbreviation Expansion
+```markdown
+## 📸 Screenshots
 
-PCM → Paracetamol
-AZ → Azithromycin
-AMOX → Amoxicillin
-MET → Metformin
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
 
-Fuzzy Matching
+### Report Analysis
+![Report Analysis](screenshots/report-analysis.png)
 
-Handle OCR mistakes:
-
-Paracetmol → Paracetamol
-Azithromcin → Azithromycin
-Amoxicilin → Amoxicillin
-
-Show:
-
-Match Confidence
-
-Suggested Medicine
-
-Manual Correction Option
-
-Medicine Verification Page
-
-Display:
-
-Medicine Name
-Generic Name
-Drug Class
-Uses
-Dosage
-Side Effects
-Manufacturer
-
-Highlight:
-
-Verified Medicines
-
-Unknown Medicines
-
-Potential OCR Errors
-
-Lab Report Analyzer
-
-Upload PDF/Image lab reports.
-
-Extract:
-
-Hemoglobin
-
-Glucose
-
-Cholesterol
-
-HDL
-
-LDL
-
-Triglycerides
-
-Creatinine
-
-WBC
-
-Platelets
-
-Display:
-
-Parameter
-Value
-Reference Range
-Status
-
-Status:
-
-Normal
-
-High
-
-Low
-
-Provide simple AI explanation for each result.
-
-Reports Page
-
-Display:
-
-Prescription History
-
-Lab Report History
-
-Verification Reports
-
-Actions:
-
-View
-
-Download PDF
-
-Delete
-
-Backend Architecture
-
-Backend Framework:
-
-FastAPI
-
-Database:
-
-SQLite
-
-ORM:
-
-SQLAlchemy
-
-Authentication:
-
-JWT
-
-Database Tables
-
-users
-
-id
-
-username
-
-email
-
-password_hash
-
-created_at
-
-prescriptions
-
-id
-
-user_id
-
-image_path
-
-extracted_text
-
-confidence_score
-
-created_at
-
-medicines
-
-id
-
-medicine_name
-
-generic_name
-
-drug_class
-
-indications
-
-dosage
-
-side_effects
-
-manufacturer
-
-lab_reports
-
-id
-
-user_id
-
-report_path
-
-extracted_data
-
-created_at
-
-verification_logs
-
-id
-
-prescription_id
-
-medicine_name
-
-match_score
-
-verification_status
-
-created_at
-
-API Endpoints
-
-POST /upload-prescription
-
-POST /extract-text
-
-POST /verify-medicines
-
-POST /analyze-lab-report
-
-GET /medicine-search
-
-GET /dashboard-stats
-
-POST /login
-
-POST /register
-
-OCR Integration
-
-Use:
-
-TrOCR
-
-PaddleOCR
-
-EasyOCR
-
-Pipeline:
-
-Image preprocessing
-
-OCR execution
-
-Result aggregation
-
-Confidence scoring
-
-Final extraction
-
-Show OCR confidence visually.
-
-PDF Reports
-
-Generate downloadable reports including:
-
-Patient Details
-
-Prescription Image
-
-OCR Results
-
-Medicine Verification
-
-Lab Analysis
-
-Confidence Scores
-
-Dashboard Analytics
-
-Include:
-
-Line Charts
-
-Pie Charts
-
-Bar Charts
-
-Using Recharts.
-
-Deployment
-
-Generate:
-
-Complete folder structure
-
-React Frontend
-
-FastAPI Backend
-
-Tailwind CSS configuration
-
-SQLAlchemy models
-
-API routes
-
-Requirements.txt
-
-Package.json
-
-Dockerfile
-
-Docker Compose
-
-.env.example
-
-README.md
-
-Application must be fully runnable in VS Code with clear setup instructions and production-ready code structure.
-
-Generate all pages, components, APIs, models, and deployment configuration required for a complete working healthcare application.
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://ai-mediscan.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/4f35807d-7822-4de0-800e-18c95a156285).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+### Medical Findings
+![Medical Findings](screenshots/medical-findings.png)
 ```
+
+---
+
+## 👩‍💻 Author
+
+### Sarjanaa S N
+
+**Computer Science Engineering Student | AI & HealthTech Enthusiast**
+
+Interested in:
+
+* Artificial Intelligence
+* Machine Learning
+* Full-Stack Development
+* UI/UX
+* HealthTech
+* Generative AI
+* Innovative Technology
+
+---
+
+## ⭐ Support
+
+If you find **MediScan AI** interesting or useful:
+
+⭐ Star the repository
+🍴 Fork the project
+🐛 Report issues
+💡 Suggest new features
+
+---
+
+<p align="center">
+
+### 🩺 MediScan AI
+
+**Making medical information easier to understand — one report at a time.**
+
+</p>
